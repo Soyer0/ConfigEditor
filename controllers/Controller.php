@@ -3,6 +3,7 @@ require_once(__DIR__ . '/../lib/data.php');
 
 class Controller
 {
+    private const CONFIG_FILE = __DIR__ . '/../config/config.php';
     private Data $data;
 
     public function __construct()
@@ -12,17 +13,17 @@ class Controller
 
     public function showConfig(): void
     {
-        $config = $this->loadConfig(__DIR__ . '/../config/config.php');
+        $config = $this->loadConfig();
         $content = $this->render('config_panel/index', ['configSections' => $config]);
 
         echo $this->render('layout', ['content' => $content]);
     }
 
-    private function loadConfig($path): array {
+    private function loadConfig(): array {
         $config = [];
 
-        if (file_exists($path)) {
-            include $path;
+        if (file_exists(self::CONFIG_FILE)) {
+            include self::CONFIG_FILE;
 
             return [
                 'mail'            => $config['mail']            ?? [],
@@ -60,13 +61,12 @@ class Controller
             return;
         }
 
-        $configFile = __DIR__ . '/../config/config.php';
-        if (!is_writable($configFile)) {
+        if (!is_writable(self::CONFIG_FILE)) {
             echo json_encode(['error' => 'Config file is not writable']);
             return;
         }
 
-        $fileContent = file_get_contents($configFile);
+        $fileContent = file_get_contents(self::CONFIG_FILE);
         if ($fileContent === false) {
             echo json_encode(['error' => 'Failed to read config file']);
             return;
@@ -79,7 +79,7 @@ class Controller
         if (preg_match($pattern, $fileContent)) {
             $newContent = preg_replace($pattern, '$1' . $exportedValue . ';', $fileContent, 1);
 
-            if (file_put_contents($configFile, $newContent) === false) {
+            if (file_put_contents(self::CONFIG_FILE, $newContent) === false) {
                 echo json_encode(['error' => 'Failed to write config file']);
                 return;
             }
@@ -88,8 +88,8 @@ class Controller
         } else {
             echo json_encode(['error' => "Config key '{$configKey}' not found in config.php"]);
         }
-
     }
+
     private function render($view, $data = []): bool|string
     {
         extract($data);

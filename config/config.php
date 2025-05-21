@@ -24,8 +24,8 @@ $config['recaptcha'] = array (
 );
 $config['facebook'] = array('appId' => 'FACEBOOK_APP_ID', 'secret' => 'FACEBOOK_SECRET_KEY');
 $config['googlesignin'] = array (
-  'clientId' => 'GOOGLE_CLIENT_ID',
-  'secret' => 'GOOGLE_API_SECRET',
+  'clientId' => 'GOOGLE_CLIENT_ID213123123',
+  'secret' => 'GOOGLE_API_SECRET123123123',
 );
 
 /**
